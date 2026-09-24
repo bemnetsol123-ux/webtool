@@ -1905,7 +1905,13 @@ function executeCommand(cmdStr) {
       break;
 
     default:
-      printTermLine(`Command not recognized: '${cmd}'. Type 'help' for command list.`, "err");
+      const matchedTool = TOOLS.find(t => t.id === cmd || t.name.toLowerCase() === cmd);
+      if(matchedTool) {
+        printTermLine(`[*] Detected tool identifier '${matchedTool.id}'. Executing module...`, "dm");
+        executeCommand(`run ${matchedTool.id}`);
+      } else {
+        printTermLine(`Command not recognized: '${cmd}'. Type 'help' for command list or 'run <tool>' to launch indexed modules.`, "err");
+      }
   }
 }
 
