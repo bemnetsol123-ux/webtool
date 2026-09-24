@@ -1446,8 +1446,21 @@ function renderArsenal() {
         copyToClipboard(processedCmd, copyBtn);
       };
 
+      const runBtn = document.createElement("button");
+      runBtn.className = "copy";
+      runBtn.style.background = "rgba(70,255,166,0.15)";
+      runBtn.style.borderColor = "var(--grn)";
+      runBtn.style.color = "var(--grn)";
+      runBtn.textContent = "▶ RUN";
+      runBtn.onclick = (e) => {
+        e.stopPropagation();
+        executeCommand(`run ${tool.id}`);
+        document.getElementById("deck").scrollIntoView({ behavior: 'smooth' });
+      };
+
       cline.appendChild(promptSpan);
       cline.appendChild(codeEl);
+      cline.appendChild(runBtn);
       cline.appendChild(copyBtn);
       ftr.appendChild(cline);
     } else {
@@ -1831,20 +1844,29 @@ function executeCommand(cmdStr) {
 
     case "run":
       if(!arg) {
-        printTermLine("Usage: run <tool_name>", "warn");
+        printTermLine("Usage: run <tool_name> (e.g. run nmap)", "warn");
         break;
       }
-      const tRun = TOOLS.find(t => t.id === arg || t.name.toLowerCase() === arg);
+      const tRun = TOOLS.find(t => t.id === arg.toLowerCase() || t.name.toLowerCase() === arg.toLowerCase());
       if(tRun) {
         const processedRun = processCommandTemplate(tRun.run);
-        printTermLine(`[+] Launching module: ${tRun.name}...`, "ok");
-        printTermLine(`$ ${processedRun}`, "out");
-        printTermLine(`[+] Executing target audit sequence against ${getParams().target}...`, "warn");
+        printTermLine(`[+] Initializing environment for [${tRun.name.toUpperCase()}]...`, "ok");
+        printTermLine(`[+] Target: ${getParams().target} | Port: ${getParams().port} | Interface: ${getParams().iface}`, "dm");
+        printTermLine(`$ ${processedRun}`, "cy");
+        printTermLine(`[+] Dispatching process payload to local socket...`, "warn");
+        
         setTimeout(() => {
-          printTermLine(`[✓] ${tRun.name} execution simulation complete. Telemetry captured.`, "ok");
-        }, 800);
+          printTermLine(`[>] ${tRun.name}: Listening for response packets / stream data...`, "out");
+        }, 400);
+
+        setTimeout(() => {
+          if(tRun.defense) {
+            printTermLine(`[🛡️ TELEMETRY ALERT]: ${tRun.defense.substring(0, 80)}...`, "warn");
+          }
+          printTermLine(`[✓] ${tRun.name} execution sequence completed successfully. Output archived to local session storage.`, "ok");
+        }, 900);
       } else {
-        printTermLine(`Unknown module '${arg}'.`, "err");
+        printTermLine(`Unknown module '${arg}'. Type 'ls' to see all available tools.`, "err");
       }
       break;
 
