@@ -428,6 +428,23 @@ h1.giant .cur {
 .cheat .code { font-size: 12px; color: var(--ink); word-break: break-all; background: var(--bg0); border: 1px solid var(--line); padding: 10px 12px; font-family: var(--mono); position: relative; }
 .cheat .desc { font-size: 12px; color: var(--dim); }
 
+/* Playbooks Grid */
+.playbooks { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 16px; margin-bottom: 40px; }
+.playbook-card { border: 1px solid var(--line); background: var(--panel2); padding: 20px; display: flex; flex-direction: column; gap: 12px; position: relative; }
+.playbook-card:hover { border-color: var(--mode-accent); }
+.playbook-card .title { font-family: var(--disp); font-size: 16px; color: var(--ink); letter-spacing: .08em; display: flex; justify-content: space-between; align-items: center; }
+.playbook-card .steps { display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
+.playbook-step { background: var(--bg0); border: 1px solid var(--line); padding: 8px 12px; font-size: 11.5px; font-family: var(--mono); display: flex; justify-content: space-between; align-items: center; }
+.playbook-step .step-no { color: var(--mode-accent); font-weight: bold; margin-right: 8px; }
+
+/* Favorite Star Button */
+.fav-btn { background: none; border: none; color: var(--dim); font-size: 15px; cursor: pointer; padding: 2px 6px; transition: color 0.2s; }
+.fav-btn.on, .fav-btn:hover { color: var(--amb); }
+
+/* Audio Controls */
+.audio-ctrl { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--dim); }
+.audio-ctrl input[type="range"] { accent-color: var(--mode-accent); width: 60px; height: 4px; cursor: pointer; }
+
 /* Modal Viewer */
 .modal-overlay {
   position: fixed; inset: 0; z-index: 100; background: rgba(4,7,10,0.85); backdrop-filter: blur(8px);
@@ -519,6 +536,10 @@ kbd { border: 1px solid var(--line2); padding: 1px 7px; font-size: 11px; color: 
       <div class="theme-dot" style="background:#5ad1ff;" onclick="setTheme('cyan')" title="Matrix Cyan"></div>
       <div class="theme-dot" style="background:#ff5c8a;" onclick="setTheme('magenta')" title="Synthwave Magenta"></div>
     </div>
+    <div class="audio-ctrl">
+      <span>VOL:</span>
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.5" title="Terminal Master Volume">
+    </div>
     <span>UPTIME <b id="uptime">00:00:00</b> · <b id="clock">--:--:--</b></span>
   </div>
 </div>
@@ -556,6 +577,7 @@ kbd { border: 1px solid var(--line2); padding: 1px 7px; font-size: 11px; color: 
     <nav class="toplinks" aria-label="Main Navigation">
       <a href="#arsenal">ARSENAL</a>
       <a href="#deck">TERMINAL</a>
+      <a href="#playbooks">PLAYBOOKS</a>
       <a href="#cheats">CHEATS</a>
     </nav>
     <div class="stat">
@@ -690,9 +712,75 @@ kbd { border: 1px solid var(--line2); padding: 1px 7px; font-size: 11px; color: 
     </div>
   </div>
 
-  <!-- Section 03: Attack & Defense Cheatsheets -->
-  <div class="sec-head" id="cheats">
+  <!-- Section 03: Guided Audit Playbooks -->
+  <div class="sec-head" id="playbooks">
     <span class="no">03</span>
+    <h2>AUDIT <i>PLAYBOOKS</i></h2>
+    <span class="rule"></span>
+    <span class="note">GUIDED MULTI-STAGE RECON & EXPLOIT WORKFLOWS</span>
+  </div>
+
+  <div class="playbooks">
+    <div class="playbook-card">
+      <div class="title">
+        <span>🌐 WEB APP PENETRATION AUDIT</span>
+        <button class="btn cyn" style="padding:4px 10px; font-size:10px;" onclick="runPlaybook('web')">RUN AUDIT</button>
+      </div>
+      <p style="font-size:12px; color:var(--dim);">Full web application security assessment sequence from subdomains to parameter injection.</p>
+      <div class="steps">
+        <div class="playbook-step"><span><span class="step-no">01</span>Subdomain Discovery</span><code>subfinder -d {TARGET}</code></div>
+        <div class="playbook-step"><span><span class="step-no">02</span>Active Web Probing</span><code>httpx -u http://{TARGET}</code></div>
+        <div class="playbook-step"><span><span class="step-no">03</span>Directory Fuzzing</span><code>gobuster dir -u http://{TARGET}</code></div>
+        <div class="playbook-step"><span><span class="step-no">04</span>Vulnerability Scan</span><code>nuclei -u http://{TARGET}</code></div>
+      </div>
+    </div>
+
+    <div class="playbook-card">
+      <div class="title">
+        <span>🏰 ACTIVE DIRECTORY ASSESSMENT</span>
+        <button class="btn amb" style="padding:4px 10px; font-size:10px;" onclick="runPlaybook('ad')">RUN AUDIT</button>
+      </div>
+      <p style="font-size:12px; color:var(--dim);">Active Directory domain mapping, Kerberos enumeration, and credential harvesting workflow.</p>
+      <div class="steps">
+        <div class="playbook-step"><span><span class="step-no">01</span>AD Graph Collection</span><code>SharpHound.exe -c All</code></div>
+        <div class="playbook-step"><span><span class="step-no">02</span>User Pre-Auth Enum</span><code>kerbrute userenum -d domain.local</code></div>
+        <div class="playbook-step"><span><span class="step-no">03</span>SMB Share Auditing</span><code>crackmapexec smb {TARGET}</code></div>
+        <div class="playbook-step"><span><span class="step-no">04</span>LSA / Hash Extraction</span><code>impacket-secretsdump</code></div>
+      </div>
+    </div>
+
+    <div class="playbook-card">
+      <div class="title">
+        <span>📱 ANDROID REVERSE ENGINEERING</span>
+        <button class="btn" style="padding:4px 10px; font-size:10px; border-color:var(--blu); color:var(--blu);" onclick="runPlaybook('mobile')">RUN AUDIT</button>
+      </div>
+      <p style="font-size:12px; color:var(--dim);">Decompile APK, inspect manifest badging, bypass SSL pinning, and hook dynamic methods.</p>
+      <div class="steps">
+        <div class="playbook-step"><span><span class="step-no">01</span>Manifest & Badging Dump</span><code>aapt dump badging app.apk</code></div>
+        <div class="playbook-step"><span><span class="step-no">02</span>APK Decompilation</span><code>apktool d app.apk</code></div>
+        <div class="playbook-step"><span><span class="step-no">03</span>DEX Java Decompile</span><code>jadx app.apk -d src/</code></div>
+        <div class="playbook-step"><span><span class="step-no">04</span>Dynamic Frida Hooking</span><code>objection -g com.app explore</code></div>
+      </div>
+    </div>
+
+    <div class="playbook-card">
+      <div class="title">
+        <span>☁️ CLOUD INFRASTRUCTURE AUDIT</span>
+        <button class="btn" style="padding:4px 10px; font-size:10px; border-color:var(--lime); color:var(--lime);" onclick="runPlaybook('cloud')">RUN AUDIT</button>
+      </div>
+      <p style="font-size:12px; color:var(--dim);">Assess AWS/Azure cloud security posture against CIS benchmarks and misconfigurations.</p>
+      <div class="steps">
+        <div class="playbook-step"><span><span class="step-no">01</span>Host Asset Discovery</span><code>shodan host {TARGET}</code></div>
+        <div class="playbook-step"><span><span class="step-no">02</span>IaC Terraform Audit</span><code>checkmarx/kics scan</code></div>
+        <div class="playbook-step"><span><span class="step-no">03</span>CIS Benchmark Scan</span><code>prowler aws --profile default</code></div>
+        <div class="playbook-step"><span><span class="step-no">04</span>S3 / IAM Auditing</span><code>trivy image {TARGET}</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 04: Attack & Defense Cheatsheets -->
+  <div class="sec-head" id="cheats">
+    <span class="no">04</span>
     <h2>TACTICAL <i>CHEATSHEETS</i></h2>
     <span class="rule"></span>
     <span class="note">READY PAYLOADS & DEFENSIVE COUNTERMEASURES</span>
@@ -1056,15 +1144,34 @@ let termTabs = [
 ];
 let activeTabId = 1;
 
+// Volume control state
+let masterVolume = 0.5;
+
+// Favorites tracking (stored in localStorage)
+let favoriteToolIds = new Set(JSON.parse(localStorage.getItem("ghostdeck_fav_tools") || "[]"));
+
+function toggleFavorite(toolId) {
+  if(favoriteToolIds.has(toolId)) {
+    favoriteToolIds.delete(toolId);
+    showToast(`REMOVED FROM FAVORITES`);
+  } else {
+    favoriteToolIds.add(toolId);
+    showToast(`ADDED TO FAVORITES ⭐`);
+  }
+  localStorage.setItem("ghostdeck_fav_tools", JSON.stringify([...favoriteToolIds]));
+  renderArsenal();
+}
+
 // Audio Synth helper for retro sound feedback
 const playTone = (freq = 440, duration = 0.05, type = 'sine') => {
+  if(masterVolume <= 0) return;
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = type;
     osc.frequency.setValueAtTime(freq, ctx.currentTime);
-    gain.gain.setValueAtTime(0.03, ctx.currentTime);
+    gain.gain.setValueAtTime(0.03 * masterVolume, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
     osc.connect(gain);
     gain.connect(ctx.destination);
@@ -1072,6 +1179,67 @@ const playTone = (freq = 440, duration = 0.05, type = 'sine') => {
     osc.stop(ctx.currentTime + duration);
   } catch(e) {}
 };
+
+// Playbooks Automation Runner
+function runPlaybook(type) {
+  playTone(800, 0.08);
+  document.getElementById("deck").scrollIntoView({ behavior: 'smooth' });
+  const p = getParams();
+  
+  if(type === 'web') {
+    printTermLine(`[⚡ PLAYBOOK INITIALIZED]: Web Application Penetration Audit`, "cy");
+    printTermLine(`[1/4] Running Subdomain Discovery: subfinder -d ${p.target}`, "dm");
+    setTimeout(() => printTermLine(`[+] Found subdomains: api.${p.target}, dev.${p.target}, admin.${p.target}`, "ok"), 500);
+    setTimeout(() => printTermLine(`[2/4] Probing HTTP endpoints: httpx -u http://${p.target}`, "dm"), 1000);
+    setTimeout(() => printTermLine(`[+] Probed http://${p.target} [200 OK] Title: Target Portal Server: NGINX/1.18.0`, "ok"), 1500);
+    setTimeout(() => printTermLine(`[3/4] Fuzzing paths: gobuster dir -u http://${p.target} -w ${p.wordlist}`, "dm"), 2000);
+    setTimeout(() => printTermLine(`[+] Discovered: /admin [301], /api/v1 [200], /login.php [200]`, "ok"), 2500);
+    setTimeout(() => printTermLine(`[4/4] Launching Nuclei CVE Scanner: nuclei -u http://${p.target}`, "dm"), 3000);
+    setTimeout(() => {
+      printTermLine(`[CVE-2023-28432] [CRITICAL] Exposed MinIO Information Disclosure at http://${p.target}/minio/bootstrap`, "err");
+      printTermLine(`[✓] Web App Penetration Audit Playbook completed successfully.`, "ok");
+    }, 3600);
+  } else if(type === 'ad') {
+    printTermLine(`[⚡ PLAYBOOK INITIALIZED]: Active Directory Domain Assessment`, "cy");
+    printTermLine(`[1/4] Collecting AD Graph telemetry via SharpHound...`, "dm");
+    setTimeout(() => printTermLine(`[+] Zip archived: ad_data_${Date.now()}.zip (1,420 AD objects collected)`, "ok"), 600);
+    setTimeout(() => printTermLine(`[2/4] Enumerating Kerberos Pre-Auth: kerbrute userenum -d domain.local`, "dm"), 1200);
+    setTimeout(() => printTermLine(`[+] Valid User Accounts: svc_sql, admin, krbtgt, jdoe`, "ok"), 1800);
+    setTimeout(() => printTermLine(`[3/4] Probing SMB shares: crackmapexec smb ${p.target} -u 'svc_sql'`, "dm"), 2400);
+    setTimeout(() => printTermLine(`[+] Pwn3d! SMB Access Granted (READ, WRITE) on \\\\${p.target}\\SYSVOL`, "ok"), 3000);
+    setTimeout(() => {
+      printTermLine(`[4/4] Executing remote secretsdump: impacket-secretsdump domain/svc_sql@${p.target}`, "dm");
+      printTermLine(`[+] Dumped Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::`, "err");
+      printTermLine(`[✓] Active Directory Playbook completed successfully.`, "ok");
+    }, 3700);
+  } else if(type === 'mobile') {
+    printTermLine(`[⚡ PLAYBOOK INITIALIZED]: Android Reverse Engineering Pass`, "cy");
+    printTermLine(`[1/4] Dumping APK badging: aapt dump badging target.apk`, "dm");
+    setTimeout(() => printTermLine(`[+] Package: com.target.app | Version: 3.4.1 | MinSDK: 26 | Exported Activities: 4`, "ok"), 500);
+    setTimeout(() => printTermLine(`[2/4] Decompiling APK resources: apktool d target.apk`, "dm"), 1100);
+    setTimeout(() => printTermLine(`[+] Resources disassembled into smali/ directory. AndroidManifest.xml parsed.`, "ok"), 1700);
+    setTimeout(() => printTermLine(`[3/4] Decompiling DEX to Java: jadx target.apk -d src/`, "dm"), 2300);
+    setTimeout(() => printTermLine(`[+] Decompiled 412 Java classes. Hardcoded API Secret identified in com.target.app.SecurityConfig`, "warn");
+    setTimeout(() => {
+      printTermLine(`[4/4] Attaching Objection SSL Pinning Bypass: objection -g com.target.app explore`, "dm");
+      printTermLine(`[+] Hooked javax.net.ssl.HttpsURLConnection -> TrustManager Bypassed! Traffic intercept ready.`, "ok");
+      printTermLine(`[✓] Mobile Reverse Engineering Playbook completed.`, "ok");
+    }, 3100);
+  } else if(type === 'cloud') {
+    printTermLine(`[⚡ PLAYBOOK INITIALIZED]: Cloud Infrastructure Security Audit`, "cy");
+    printTermLine(`[1/4] Scanning target host IP: shodan host ${p.target}`, "dm");
+    setTimeout(() => printTermLine(`[+] Host ${p.target} open ports: 80, 443, 8080 (Kubernetes API), 9000 (MinIO)`, "ok"), 500);
+    setTimeout(() => printTermLine(`[2/4] Scanning IaC Terraform templates: kics scan -p ./terraform`, "dm"), 1100);
+    setTimeout(() => printTermLine(`[+] HIGH: S3 Bucket missing server-side encryption (AES256)`, "warn");
+    setTimeout(() => printTermLine(`[3/4] Running Prowler CIS Benchmark: prowler aws --profile default`, "dm"), 1700);
+    setTimeout(() => printTermLine(`[+] PASS: 182 checks | FAIL: 14 checks (IAM Root MFA Disabled)`, "err");
+    setTimeout(() => {
+      printTermLine(`[4/4] Container vulnerability scan: trivy image target:latest`, "dm");
+      printTermLine(`[+] Total CVEs: 3 Critical, 11 High (libssl1.1 vulnerability patch required)`, "ok");
+      printTermLine(`[✓] Cloud Security Audit Playbook completed.`, "ok");
+    }, 2500);
+  }
+}
 
 // Target Parameters (Option A)
 function getParams() {
@@ -1270,12 +1438,22 @@ function renderArsenal() {
     title.textContent = tool.name;
     title.onclick = () => openModal(tool);
 
+    const favBtn = document.createElement("button");
+    favBtn.className = `fav-btn ${favoriteToolIds.has(tool.id) ? 'on' : ''}`;
+    favBtn.textContent = favoriteToolIds.has(tool.id) ? "★" : "☆";
+    favBtn.title = favoriteToolIds.has(tool.id) ? "Remove Favorite" : "Bookmark Favorite";
+    favBtn.onclick = (e) => {
+      e.stopPropagation();
+      toggleFavorite(tool.id);
+    };
+
     const chip = document.createElement("span");
     chip.className = "chip";
     chip.textContent = tool.cat.toUpperCase();
 
     hdr.appendChild(idxSpan);
     hdr.appendChild(title);
+    hdr.appendChild(favBtn);
     hdr.appendChild(chip);
 
     // Desc
@@ -1719,21 +1897,75 @@ function executeCommand(cmdStr) {
       const tRun = TOOLS.find(t => t.id === arg.toLowerCase() || t.name.toLowerCase() === arg.toLowerCase());
       if(tRun) {
         const processedRun = processCommandTemplate(tRun.run);
-        printTermLine(`[+] Initializing environment for [${tRun.name.toUpperCase()}]...`, "ok");
-        printTermLine(`[+] Target: ${getParams().target} | Port: ${getParams().port} | Interface: ${getParams().iface}`, "dm");
+        const p = getParams();
+        printTermLine(`[+] Initializing process sandbox for [${tRun.name.toUpperCase()}]...`, "ok");
         printTermLine(`$ ${processedRun}`, "cy");
-        printTermLine(`[+] Dispatching process payload to local socket...`, "warn");
         
+        // Dynamic realistic tool simulator
         setTimeout(() => {
-          printTermLine(`[>] ${tRun.name}: Listening for response packets / stream data...`, "out");
-        }, 400);
-
-        setTimeout(() => {
-          if(tRun.defense) {
-            printTermLine(`[🛡️ TELEMETRY ALERT]: ${tRun.defense.substring(0, 80)}...`, "warn");
+          const id = tRun.id;
+          if(id === "nmap") {
+            printTermLine(`Starting Nmap 7.94 ( https://nmap.org ) at ${new Date().toISOString().substring(0,19).replace('T',' ')} UTC`, "dm");
+            printTermLine(`Nmap scan report for ${p.target}`);
+            printTermLine(`Host is up (0.0018s latency). Not shown: 996 closed tcp ports (reset)`);
+            printTermLine(`PORT     STATE SERVICE       VERSION`, "ok");
+            printTermLine(`22/tcp   open  ssh           OpenSSH 8.9p1 Ubuntu 3ubuntu0.4`, "ok");
+            printTermLine(`80/tcp   open  http          Apache httpd 2.4.52 ((Ubuntu))`, "ok");
+            printTermLine(`443/tcp  open  ssl/https     nginx/1.18.0`, "ok");
+            printTermLine(`4444/tcp open  krb524?       Custom Listener / Payload Receiver`, "warn");
+            printTermLine(`Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel`, "dm");
+          } else if(id === "gobuster" || id === "ffuf" || id === "dirb" || id === "dirsearch" || id === "feroxbuster") {
+            printTermLine(`===============================================================`, "dm");
+            printTermLine(`[+] Target URL:     http://${p.target}`, "ok");
+            printTermLine(`[+] Wordlist:       ${p.wordlist} (14,344 entries)`, "dm");
+            printTermLine(`===============================================================`, "dm");
+            printTermLine(`[+] /admin                (Status: 301) [Size: 312] [--> /admin/]`, "ok");
+            printTermLine(`[+] /login.php            (Status: 200) [Size: 4210]`, "ok");
+            printTermLine(`[+] /api/v1/users         (Status: 200) [Size: 844]`, "warn");
+            printTermLine(`[+] /uploads              (Status: 403) [Size: 278]`, "dm");
+            printTermLine(`[+] /config.bak           (Status: 200) [Size: 1024]`, "err");
+            printTermLine(`===============================================================`, "dm");
+          } else if(id === "sqlmap") {
+            printTermLine(`[10:05:01] [INFO] testing connection to target URL: http://${p.target}`, "dm");
+            printTermLine(`[10:05:02] [INFO] GET parameter 'id' is vulnerable to Union SQL Injection!`, "ok");
+            printTermLine(`---`, "dm");
+            printTermLine(`Parameter: id (GET)\n    Type: boolean-based blind / UNION query\n    Payload: id=1 UNION ALL SELECT NULL,CONCAT(username,0x3a,password) FROM users--`, "cy");
+            printTermLine(`---`, "dm");
+            printTermLine(`[*] Databases found: [4]\n  - information_schema\n  - target_db (contains 12 tables)`, "ok");
+          } else if(id === "metasploit") {
+            printTermLine(`[+] MSFconsole v6.3.35-dev starting...`, "dm");
+            printTermLine(`[+] Loaded 2,345 exploits, 1,210 auxiliary scanners, 412 payloads.`, "ok");
+            printTermLine(`[*] Started reverse TCP handler on ${p.target}:${p.port}`, "warn");
+            printTermLine(`[*] Sending stage (175,394 bytes) to target...`, "ok");
+            printTermLine(`[+] Meterpreter session 1 opened (${p.target}:${p.port} -> target:49182)`, "cy");
+          } else if(id === "hydra") {
+            printTermLine(`Hydra v9.5 (c) 2023 by THC - Starting parallelized attack...`, "dm");
+            printTermLine(`[DATA] max 4 tasks per 1 server, target ${p.target}, service ssh`, "dm");
+            printTermLine(`[STATUS] attack started for ${p.target} (port ${p.port}/tcp)`, "dm");
+            printTermLine(`[22][ssh] host: ${p.target}   login: admin   password: password123`, "err");
+            printTermLine(`1 of 1 target completed, 1 valid password found!`, "ok");
+          } else if(id === "mimikatz" || id === "impacket") {
+            printTermLine(`[+] Inspecting target LSASS process memory...`, "dm");
+            printTermLine(`Authentication Id : 0 ; 997 (00000000:000003e7)`, "dm");
+            printTermLine(`User Name         : Administrator`, "ok");
+            printTermLine(`Domain            : TARGET-DC`, "ok");
+            printTermLine(`NTLM Hash         : 31d6cfe0d16ae931b73c59d7e0c089c0`, "err");
+            printTermLine(`SHA1 Hash         : cbe3f07a7e8006d64942b083d98d02298c474d28`, "err");
+          } else if(id === "frida" || id === "objection") {
+            printTermLine(`[+] Attached to target runtime process. Injecting V8 engine...`, "dm");
+            printTermLine(`[+] Hooked javax.net.ssl.TrustManagerImpl.verify()`, "ok");
+            printTermLine(`[+] SSL Pinning status: BYPASSED`, "cy");
+            printTermLine(`[+] Intercepted HTTPS API payload sent to endpoint /api/auth`, "warn");
+          } else {
+            printTermLine(`[>] ${tRun.name}: Processing request on interface ${p.iface}...`, "out");
+            printTermLine(`[>] Packet stream dispatched. Execution finished cleanly.`, "ok");
           }
-          printTermLine(`[✓] ${tRun.name} execution sequence completed successfully. Output archived to local session storage.`, "ok");
-        }, 900);
+
+          if(tRun.defense) {
+            printTermLine(`[🛡️ TELEMETRY ALERT]: ${tRun.defense.substring(0, 90)}...`, "warn");
+          }
+          printTermLine(`[✓] ${tRun.name} execution sequence completed successfully. Output logged to active tab session.`, "ok");
+        }, 500);
       } else {
         printTermLine(`Unknown module '${arg}'. Type 'ls' to see all available tools.`, "err");
       }
@@ -1979,6 +2211,14 @@ document.addEventListener("DOMContentLoaded", () => {
     rollWotd();
     showToast("PARAMETERS RESET TO DEFAULTS");
   });
+
+  // Volume control listener
+  const volSlider = document.getElementById("volumeSlider");
+  if(volSlider) {
+    volSlider.addEventListener("input", (e) => {
+      masterVolume = parseFloat(e.target.value);
+    });
+  }
 
   // Buttons & Controls
   modeToggleBtn.addEventListener("click", toggleTacticalMode);
