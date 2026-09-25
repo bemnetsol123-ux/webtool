@@ -1219,7 +1219,7 @@ function runPlaybook(type) {
     setTimeout(() => printTermLine(`[2/4] Decompiling APK resources: apktool d target.apk`, "dm"), 1100);
     setTimeout(() => printTermLine(`[+] Resources disassembled into smali/ directory. AndroidManifest.xml parsed.`, "ok"), 1700);
     setTimeout(() => printTermLine(`[3/4] Decompiling DEX to Java: jadx target.apk -d src/`, "dm"), 2300);
-    setTimeout(() => printTermLine(`[+] Decompiled 412 Java classes. Hardcoded API Secret identified in com.target.app.SecurityConfig`, "warn");
+    setTimeout(() => printTermLine(`[+] Decompiled 412 Java classes. Hardcoded API Secret identified in com.target.app.SecurityConfig`, "warn"), 2700);
     setTimeout(() => {
       printTermLine(`[4/4] Attaching Objection SSL Pinning Bypass: objection -g com.target.app explore`, "dm");
       printTermLine(`[+] Hooked javax.net.ssl.HttpsURLConnection -> TrustManager Bypassed! Traffic intercept ready.`, "ok");
@@ -1230,9 +1230,9 @@ function runPlaybook(type) {
     printTermLine(`[1/4] Scanning target host IP: shodan host ${p.target}`, "dm");
     setTimeout(() => printTermLine(`[+] Host ${p.target} open ports: 80, 443, 8080 (Kubernetes API), 9000 (MinIO)`, "ok"), 500);
     setTimeout(() => printTermLine(`[2/4] Scanning IaC Terraform templates: kics scan -p ./terraform`, "dm"), 1100);
-    setTimeout(() => printTermLine(`[+] HIGH: S3 Bucket missing server-side encryption (AES256)`, "warn");
+    setTimeout(() => printTermLine(`[+] HIGH: S3 Bucket missing server-side encryption (AES256)`, "warn"), 1400);
     setTimeout(() => printTermLine(`[3/4] Running Prowler CIS Benchmark: prowler aws --profile default`, "dm"), 1700);
-    setTimeout(() => printTermLine(`[+] PASS: 182 checks | FAIL: 14 checks (IAM Root MFA Disabled)`, "err");
+    setTimeout(() => printTermLine(`[+] PASS: 182 checks | FAIL: 14 checks (IAM Root MFA Disabled)`, "err"), 2000);
     setTimeout(() => {
       printTermLine(`[4/4] Container vulnerability scan: trivy image target:latest`, "dm");
       printTermLine(`[+] Total CVEs: 3 Critical, 11 High (libssl1.1 vulnerability patch required)`, "ok");
